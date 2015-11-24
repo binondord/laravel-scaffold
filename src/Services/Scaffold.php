@@ -53,6 +53,11 @@ class Scaffold implements ScaffoldInterface
     private $createMigrationFilesCache = array();
 
     /**
+     * @var string
+     */
+    private $routeFile = "";
+
+    /**
      * @var Model
      */
     private $model;
@@ -155,6 +160,7 @@ class Scaffold implements ScaffoldInterface
         $this->assetDownloader = app(AssetDownloaderInterface::class,[$command, $this->fileCreator]);
         $this->assetDownloader->setConfigSettings($this->configSettings);
 
+        $this->routeFile = $this->configSettings['pathTo']['routes']."routes.php";
     }
 
     /**
@@ -270,6 +276,12 @@ class Scaffold implements ScaffoldInterface
         $this->assetDownloader->fromFile = true;
 
         $this->setupLayoutFiles();
+
+        if(\File::exists($this->routeFile)){
+            $contentRoutesfile = \File::get($this->routeFile);
+        }
+
+        $this->fileCreator->createFile($this->getRoutesFileCache(), $contentRoutesfile);
 
         $inputFile = file($this->configSettings['modelDefinitionsFile']);
 
@@ -480,6 +492,12 @@ class Scaffold implements ScaffoldInterface
         return str_replace('models','created-files',$cacheModel);
     }
 
+    private function getRoutesFileCache()
+    {
+        $cacheModel = $this->getModelCacheFile();
+        return str_replace('models','routes',$cacheModel);
+    }
+
     private function removeCreatedFiles()
     {
         $remainingFiles = array();
@@ -539,12 +557,18 @@ class Scaffold implements ScaffoldInterface
     {
         if($this->removeCreatedFiles())
         {
+            if(\File::exists($this->getRoutesFileCache()))
+            {
+                $content = \File::get($this->getRoutesFileCache());
+                $this->fileCreator->createFile($this->routeFile,$content,true);
+            }
+
             $this->info('Finishing...');
 
             $this->command->call('clear-compiled');
 
             $this->command->call('optimize');
-        };
+        }
 
         $this->info('Done!');
     }
@@ -1066,7 +1090,7 @@ class Scaffold implements ScaffoldInterface
      */
     private function updateRoutes()
     {
-        $routeFile = $this->configSettings['pathTo']['routes']."routes.php";
+        $this->routeFile = $this->configSettings['pathTo']['routes']."routes.php";
 
         $namespace = $this->namespace ? $this->namespace . "\\" : "";
 
@@ -1081,9 +1105,12 @@ class Scaffold implements ScaffoldInterface
 
         $fileContents .= "Route::" . $routeType . "('" . $this->nameOf("viewFolder") . "', '" . $namespace. $this->nameOf("controller") ."');\n";
 
-        $content = \File::get($routeFile);
+        $content = \File::get($this->routeFile);
         if (preg_match("/" . $this->model->lower() . "/", $content) !== 1)
-            \File::append($routeFile, $fileContents);
+        {
+
+            \File::append($this->routeFile, $fileContents);
+        }
     }
 
     /**
