@@ -9,7 +9,7 @@ Automatically generates the files you need to get up and running. Generates a de
 Begin by installing this package through Composer. Edit your project's `composer.json` file to require `jrenton/laravel-scaffold`
 
     "require-dev": {
-		"binondord/laravel-scaffold": "dev-master"
+		"binondord/laravel-scaffold": "2.1.*"
 	}
 
 Next, update Composer from the Terminal:
