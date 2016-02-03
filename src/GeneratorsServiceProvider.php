@@ -82,7 +82,7 @@ class GeneratorsServiceProvider extends ServiceProvider {
 
                 $this->app->bind($contract, $class);
 
-                $this->app->bindShared(strtolower($unit), function($app) use($group, $unit)
+                $this->app->singleton(strtolower($unit), function($app) use($group, $unit)
                 {
                     return app(__NAMESPACE__.'\\Contracts\\'.$group.'\\'.$unit.'Interface');
                 });
