@@ -1,7 +1,7 @@
 <?php namespace Binondord\LaravelScaffold\Commands;
 
 use Illuminate\Console\AppNamespaceDetectorTrait;
-use Illuminate\Foundation\Composer;
+use Illuminate\Support\Composer;
 
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;

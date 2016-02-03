@@ -4,7 +4,7 @@ namespace Binondord\LaravelScaffold\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Foundation\Composer;
+use Illuminate\Support\Composer;
 use Illuminate\Console\GeneratorCommand;
 
 use Symfony\Component\Console\Input\InputOption;
